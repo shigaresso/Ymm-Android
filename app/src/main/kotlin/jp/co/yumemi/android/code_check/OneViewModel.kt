@@ -56,7 +56,7 @@ class OneViewModel : ViewModel() {
                     Item(
                         name = name,
                         ownerIconUrl = ownerIconUrl,
-                        language = "Written in $language",
+                        language = language,
                         stargazersCount = stargazersCount,
                         watchersCount = watchersCount,
                         forksCount = forksCount,
