@@ -9,14 +9,14 @@ import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.*
-import jp.co.yumemi.android.code_check.databinding.FragmentOneBinding
+import jp.co.yumemi.android.code_check.databinding.FragmentSearchRepositoriesBinding
 
-class SearchRepositoriesFragment : Fragment(R.layout.fragment_one) {
+class SearchRepositoriesFragment : Fragment(R.layout.fragment_search_repositories) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val binding = FragmentOneBinding.bind(view)
+        val binding = FragmentSearchRepositoriesBinding.bind(view)
 
         val viewModel = OneViewModel()
 
