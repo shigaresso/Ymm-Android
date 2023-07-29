@@ -16,10 +16,7 @@ import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import java.util.*
 
-/**
- * TwoFragment で使う
- */
-class OneViewModel : ViewModel() {
+class SearchRepositoriesViewModel : ViewModel() {
 
     // 検索結果
     fun searchResults(inputText: String): List<Item> = runBlocking {
