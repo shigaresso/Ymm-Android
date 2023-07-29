@@ -30,7 +30,7 @@ class TwoFragment : Fragment(R.layout.fragment_two) {
 
         _binding.ownerIconView.load(item.ownerIconUrl)
         _binding.nameView.text = item.name
-        _binding.languageView.text = item.language
+        _binding.languageView.text = getString(R.string.written_language, item.language)
         _binding.starsView.text = getString(R.string.stars_view, item.stargazersCount)
         _binding.watchersView.text = getString(R.string.watchers_view, item.watchersCount)
         _binding.forksView.text = getString(R.string.forks_view, item.forksCount)
