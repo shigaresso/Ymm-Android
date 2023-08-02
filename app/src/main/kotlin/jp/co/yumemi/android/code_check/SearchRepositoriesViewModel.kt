@@ -3,66 +3,44 @@
  */
 package jp.co.yumemi.android.code_check
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.engine.android.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
+import androidx.lifecycle.viewModelScope
 import jp.co.yumemi.android.code_check.MainActivity.Companion.lastSearchDate
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
-import org.json.JSONObject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
 class SearchRepositoriesViewModel : ViewModel() {
 
-    // 検索結果
-    fun searchResults(inputText: String): List<Item> = runBlocking {
-        val client = HttpClient(Android)
+    private val _repositoryItems = MutableLiveData<List<Item>>()
+    val repositoryItems: LiveData<List<Item>> = _repositoryItems
 
-        return@runBlocking GlobalScope.async {
-            val response: HttpResponse = client.get("https://api.github.com/search/repositories") {
-                header("Accept", "application/vnd.github.v3+json")
-                parameter("q", inputText)
-            }
+    suspend fun searchResults(inputText: String) {
+        viewModelScope.launch {
+            val response = GitHubRepositoryImpl().getRepositories(inputText)
+            val newRepositories = mutableListOf<Item>()
 
-            val jsonBody = JSONObject(response.receive<String>())
-
-            val jsonItems = jsonBody.optJSONArray("items")!!
-
-            val items = mutableListOf<Item>()
-
-            /**
-             * アイテムの個数分ループする
-             */
-            for (i in 0 until jsonItems.length()) {
-                val jsonItem = jsonItems.optJSONObject(i)!!
-                val name = jsonItem.optString("full_name")
-                val ownerIconUrl = jsonItem.optJSONObject("owner")!!.optString("avatar_url")
-                val language = jsonItem.optString("language")
-                val stargazersCount = jsonItem.optLong("stargazers_count")
-                val watchersCount = jsonItem.optLong("watchers_count")
-                val forksCount = jsonItem.optLong("forks_count")
-                val openIssuesCount = jsonItem.optLong("open_issues_count")
-
-                items.add(
-                    Item(
-                        name = name,
-                        ownerIconUrl = ownerIconUrl,
-                        language = language,
-                        stargazersCount = stargazersCount,
-                        watchersCount = watchersCount,
-                        forksCount = forksCount,
-                        openIssuesCount = openIssuesCount
+            withContext(Dispatchers.Default) {
+                response.items.map { item ->
+                    newRepositories.add(
+                        Item(
+                            name = item.fullName,
+                            ownerIconUrl = item.owner.avatarUrl,
+                            language = item.language,
+                            stargazersCount = item.stargazersCount,
+                            watchersCount = item.watchersCount,
+                            forksCount = item.forksCount,
+                            openIssuesCount = item.openIssuesCount,
+                        )
                     )
-                )
+                }
             }
 
+            _repositoryItems.value = newRepositories.toList()
             lastSearchDate = Date()
-
-            return@async items.toList()
-        }.await()
+        }.join()
     }
 }
