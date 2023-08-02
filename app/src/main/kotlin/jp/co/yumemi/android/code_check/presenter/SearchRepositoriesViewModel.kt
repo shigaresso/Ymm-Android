@@ -28,25 +28,22 @@ class SearchRepositoriesViewModel @Inject constructor(
     suspend fun searchResults(inputText: String) {
         viewModelScope.launch {
             val response = gitHubRepository.getRepositories(inputText)
-            val newRepositories = mutableListOf<Item>()
 
-            withContext(Dispatchers.Default) {
+            val repositories = withContext(Dispatchers.Default) {
                 response.items.map { item ->
-                    newRepositories.add(
-                        Item(
-                            name = item.fullName,
-                            ownerIconUrl = item.owner.avatarUrl,
-                            language = item.language,
-                            stargazersCount = item.stargazersCount,
-                            watchersCount = item.watchersCount,
-                            forksCount = item.forksCount,
-                            openIssuesCount = item.openIssuesCount,
-                        )
+                    Item(
+                        name = item.fullName,
+                        ownerIconUrl = item.owner.avatarUrl,
+                        language = item.language,
+                        stargazersCount = item.stargazersCount,
+                        watchersCount = item.watchersCount,
+                        forksCount = item.forksCount,
+                        openIssuesCount = item.openIssuesCount,
                     )
                 }
             }
 
-            _repositoryItems.value = newRepositories.toList()
+            _repositoryItems.value = repositories
             lastSearchDate = Date()
         }.join()
     }
