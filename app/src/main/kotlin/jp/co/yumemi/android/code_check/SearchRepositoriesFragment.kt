@@ -11,9 +11,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.*
+import dagger.hilt.android.AndroidEntryPoint
 import jp.co.yumemi.android.code_check.databinding.FragmentSearchRepositoriesBinding
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class SearchRepositoriesFragment : Fragment(R.layout.fragment_search_repositories) {
 
     private val viewModel: SearchRepositoriesViewModel by viewModels()

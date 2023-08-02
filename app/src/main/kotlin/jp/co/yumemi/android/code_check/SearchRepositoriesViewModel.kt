@@ -7,20 +7,25 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.co.yumemi.android.code_check.MainActivity.Companion.lastSearchDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
+import javax.inject.Inject
 
-class SearchRepositoriesViewModel : ViewModel() {
+@HiltViewModel
+class SearchRepositoriesViewModel @Inject constructor(
+    private val gitHubRepository: GitHubRepository
+) : ViewModel() {
 
     private val _repositoryItems = MutableLiveData<List<Item>>()
     val repositoryItems: LiveData<List<Item>> = _repositoryItems
 
     suspend fun searchResults(inputText: String) {
         viewModelScope.launch {
-            val response = GitHubRepositoryImpl().getRepositories(inputText)
+            val response = gitHubRepository.getRepositories(inputText)
             val newRepositories = mutableListOf<Item>()
 
             withContext(Dispatchers.Default) {
