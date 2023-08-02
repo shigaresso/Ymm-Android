@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.co.yumemi.android.code_check.data.GitHubRepository
 import jp.co.yumemi.android.code_check.Item
+import jp.co.yumemi.android.code_check.data.Repositories
 import jp.co.yumemi.android.code_check.presenter.MainActivity.Companion.lastSearchDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,23 +29,24 @@ class SearchRepositoriesViewModel @Inject constructor(
     suspend fun searchResults(inputText: String) {
         viewModelScope.launch {
             val response = gitHubRepository.getRepositories(inputText)
-
-            val repositories = withContext(Dispatchers.Default) {
-                response.items.map { item ->
-                    Item(
-                        name = item.fullName,
-                        ownerIconUrl = item.owner.avatarUrl,
-                        language = item.language,
-                        stargazersCount = item.stargazersCount,
-                        watchersCount = item.watchersCount,
-                        forksCount = item.forksCount,
-                        openIssuesCount = item.openIssuesCount,
-                    )
-                }
-            }
-
-            _repositoryItems.value = repositories
+            _repositoryItems.value = translateObject(response)
             lastSearchDate = Date()
-        }.join()
+        }
+    }
+
+    private suspend fun translateObject(repositories: Repositories): List<Item> {
+        return withContext(Dispatchers.Default) {
+            repositories.items.map { item ->
+                Item(
+                    name = item.fullName,
+                    ownerIconUrl = item.owner.avatarUrl,
+                    language = item.language,
+                    stargazersCount = item.stargazersCount,
+                    watchersCount = item.watchersCount,
+                    forksCount = item.forksCount,
+                    openIssuesCount = item.openIssuesCount,
+                )
+            }
+        }
     }
 }
