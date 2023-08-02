@@ -12,8 +12,8 @@ import io.ktor.client.features.logging.DEFAULT
 import io.ktor.client.features.logging.LogLevel
 import io.ktor.client.features.logging.Logger
 import io.ktor.client.features.logging.Logging
-import jp.co.yumemi.android.code_check.GitHubRepository
-import jp.co.yumemi.android.code_check.GitHubRepositoryImpl
+import jp.co.yumemi.android.code_check.data.GitHubRepository
+import jp.co.yumemi.android.code_check.data.GitHubRepositoryImpl
 import kotlinx.serialization.json.Json
 import javax.inject.Singleton
 

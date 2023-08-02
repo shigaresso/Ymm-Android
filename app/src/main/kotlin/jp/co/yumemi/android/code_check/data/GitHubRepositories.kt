@@ -1,4 +1,4 @@
-package jp.co.yumemi.android.code_check
+package jp.co.yumemi.android.code_check.data
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
