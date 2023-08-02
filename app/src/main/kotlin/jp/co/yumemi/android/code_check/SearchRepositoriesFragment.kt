@@ -7,18 +7,20 @@ import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.*
 import jp.co.yumemi.android.code_check.databinding.FragmentSearchRepositoriesBinding
+import kotlinx.coroutines.launch
 
 class SearchRepositoriesFragment : Fragment(R.layout.fragment_search_repositories) {
 
+    private val viewModel: SearchRepositoriesViewModel by viewModels()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val binding = FragmentSearchRepositoriesBinding.bind(view)
-
-        val viewModel = SearchRepositoriesViewModel()
 
         val layoutManager = LinearLayoutManager(requireContext())
         val dividerItemDecoration =
@@ -33,8 +35,9 @@ class SearchRepositoriesFragment : Fragment(R.layout.fragment_search_repositorie
             .setOnEditorActionListener { editText, action, _ ->
                 if (action == EditorInfo.IME_ACTION_SEARCH) {
                     editText.text.toString().let {
-                        viewModel.searchResults(it).apply {
-                            adapter.submitList(this)
+                        lifecycleScope.launch {
+                            viewModel.searchResults(it)
+                            adapter.submitList(viewModel.repositoryItems.value)
                         }
                     }
                     return@setOnEditorActionListener true
