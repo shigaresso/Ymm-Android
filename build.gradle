@@ -8,14 +8,14 @@ buildscript {
         classpath libs.gradle
         classpath libs.kotlin.gradle.plugin
         classpath libs.androidx.navigation.safe.args.gradle.plugin
-        classpath libs.kotlin.serialization
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
 
 plugins {
-    id 'com.google.dagger.hilt.android' version '2.47' apply false
+    alias(libs.plugins.hilt) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
 }
 
 tasks.register('clean', Delete) {
