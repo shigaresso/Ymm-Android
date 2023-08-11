@@ -3,8 +3,6 @@
  */
 package jp.co.yumemi.android.code_check.presenter
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,6 +11,8 @@ import jp.co.yumemi.android.code_check.Item
 import jp.co.yumemi.android.code_check.data.Repositories
 import jp.co.yumemi.android.code_check.presenter.MainActivity.Companion.lastSearchDate
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -23,10 +23,10 @@ class SearchRepositoriesViewModel @Inject constructor(
     private val gitHubRepository: GitHubRepository
 ) : ViewModel() {
 
-    private val _repositoryItems = MutableLiveData<List<Item>>()
-    val repositoryItems: LiveData<List<Item>> = _repositoryItems
+    private val _repositoryItems = MutableStateFlow(listOf<Item>())
+    val repositoryItems = _repositoryItems.asStateFlow()
 
-    suspend fun searchResults(inputText: String) {
+    fun searchResults(inputText: String) {
         viewModelScope.launch {
             val response = gitHubRepository.getRepositories(inputText)
             _repositoryItems.value = translateObject(response)
