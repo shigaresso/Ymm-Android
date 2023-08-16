@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
             val navController = rememberNavController()
             NavHost(navController = navController, startDestination = "searchRepositoriesScreen") {
                 composable("searchRepositoriesScreen") {
-                    SearchRepositoriesScreen() { item ->
+                    SearchRepositoriesScreen { item ->
                         navController.currentBackStackEntry?.savedStateHandle?.set(
                             key = "item",
                             value = item
@@ -31,12 +31,12 @@ class MainActivity : AppCompatActivity() {
                         navController.navigate("repositoryScreen")
                     }
                 }
-                composable(
-                    "repositoryScreen"
-                ) {
+                composable("repositoryScreen") {
                     val item =
                         navController.previousBackStackEntry?.savedStateHandle?.get<Item>("item")
-                    RepositoryScreen(item!!)
+                    item?.let {
+                        RepositoryScreen(item)
+                    }
                 }
             }
         }
