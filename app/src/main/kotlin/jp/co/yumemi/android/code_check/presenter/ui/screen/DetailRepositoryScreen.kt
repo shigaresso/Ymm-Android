@@ -1,9 +1,12 @@
 package jp.co.yumemi.android.code_check.presenter.ui.screen
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
@@ -15,13 +18,13 @@ fun RepositoryScreen(
     item: Item
 ) {
     Column {
-        if (item.ownerIconUrl.isNotEmpty()) {
-            AsyncImage(
-                model = item.ownerIconUrl,
-                contentDescription = item.name
-            )
-            Divider()
-        }
+        AsyncImage(
+            model = item.ownerIconUrl,
+            placeholder = painterResource(id = R.drawable.jetbrains),
+            contentDescription = item.name,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Divider()
         Text(item.name)
         Divider()
         Text(stringResource(R.string.written_language, item.language))
@@ -39,7 +42,6 @@ fun RepositoryScreen(
 @Preview(showBackground = true)
 @Composable
 private fun RepositoryScreenPreview() {
-    // Preview でネットから画像を表示しようとすると、他の UI も表示されないので URL は "" にして Preview している
     val item = Item(
         name = "JetBrains/kotlin",
         ownerIconUrl = "",
