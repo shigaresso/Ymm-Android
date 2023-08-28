@@ -9,8 +9,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.co.yumemi.android.code_check.data.GitHubRepository
 import jp.co.yumemi.android.code_check.Item
 import jp.co.yumemi.android.code_check.data.Repositories
+import jp.co.yumemi.android.code_check.di.DefaultDispatcher
 import jp.co.yumemi.android.code_check.presenter.MainActivity.Companion.lastSearchDate
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -20,7 +21,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchRepositoriesViewModel @Inject constructor(
-    private val gitHubRepository: GitHubRepository
+    private val gitHubRepository: GitHubRepository,
+    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
     private val _repositoryItems = MutableStateFlow(listOf<Item>())
@@ -35,7 +37,7 @@ class SearchRepositoriesViewModel @Inject constructor(
     }
 
     private suspend fun translateObject(repositories: Repositories): List<Item> {
-        return withContext(Dispatchers.Default) {
+        return withContext(defaultDispatcher) {
             repositories.items.map { item ->
                 Item(
                     name = item.fullName,
